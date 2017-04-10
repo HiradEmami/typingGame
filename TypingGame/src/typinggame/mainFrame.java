@@ -39,6 +39,7 @@ public class mainFrame extends javax.swing.JFrame {
     private int bonustime;
     static Timer timer =new Timer();
     private int interval =1000;
+    private int missedWordCounter=0;
     
     public mainFrame() {
         initComponents();
@@ -503,8 +504,8 @@ private void StartGame()
         break;
     }
     case "hard":
-    {totalTime= 5;
-        bonustime=1;
+    {totalTime= 10;
+        bonustime=2;
         
         break;
     }
@@ -515,16 +516,28 @@ private void StartGame()
             
             public void run() {
                 timerLabel.setText("Timer : "+totalTime+" seconds left");
-                totalTime--;
+               
                 
-                if(inputWordTF.getText().equals(currentWordTF.getText())){
+                if(missedWordCounter==4){
+                    totalTime=totalTime-bonustime;
+                   currentWordTF.setText(words.get(randInt(0, words.size()-1)));
+                   playerScore=playerScore-200;
+                   scoreLabel.setText("Your Score: "+playerScore);
+                   inputWordTF.setText("");
+                   missedWordCounter=0;
+                }else{
+                                    if(inputWordTF.getText().equals(currentWordTF.getText())){
                    totalTime=totalTime+bonustime;
                    currentWordTF.setText(words.get(randInt(0, words.size()-1)));
                    playerScore=playerScore+200;
                    scoreLabel.setText("Your Score: "+playerScore);
                    inputWordTF.setText("");
+                   missedWordCounter=0;
+                }else{
+                    missedWordCounter++;
                 }
-                
+                }
+                 totalTime--;
                 if (totalTime<= 0){
                     timer.cancel();
             }}
@@ -563,7 +576,7 @@ private void StartGame()
   {int length=5;
       switch(wordDifficulty){
           case "easy":{
-              length=5;
+              length=6;
             break;  
           }
           case "medium":{
