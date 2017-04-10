@@ -5,6 +5,9 @@
  */
 package typinggame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,8 +35,10 @@ public class mainFrame extends javax.swing.JFrame {
     private String wordDifficulty;
     private ArrayList <String> words;
     private int playerScore;
-    static int interval;
-    static Timer timer;
+    private int totalTime;
+    private int bonustime;
+    static Timer timer =new Timer();
+    private int interval =1000;
     
     public mainFrame() {
         initComponents();
@@ -63,8 +68,9 @@ public class mainFrame extends javax.swing.JFrame {
                settingPanel.setVisible(false);
                startPanel.setVisible(false);
                scorePanel.setVisible(false);
-               StartGame();
+
                gamePanel.setVisible(true);
+               StartGame();
                break;
            }
            case "settingPanel":{
@@ -108,6 +114,7 @@ public class mainFrame extends javax.swing.JFrame {
         JbgameHard1 = new javax.swing.JToggleButton();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         scorePanel = new javax.swing.JPanel();
         gamePanel = new javax.swing.JPanel();
         scoreLabel = new javax.swing.JLabel();
@@ -180,7 +187,7 @@ public class mainFrame extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Game Diffiiculty");
+        jLabel2.setText("Word Difficulty");
 
         JbgameEasy.setText("Easy");
         JbgameEasy.addActionListener(new java.awt.event.ActionListener() {
@@ -221,56 +228,62 @@ public class mainFrame extends javax.swing.JFrame {
 
         jLabel3.setText("jLabel3");
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Game Diffiiculty");
+
         javax.swing.GroupLayout settingPanelLayout = new javax.swing.GroupLayout(settingPanel);
         settingPanel.setLayout(settingPanelLayout);
         settingPanelLayout.setHorizontalGroup(
             settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(settingPanelLayout.createSequentialGroup()
-                .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(settingPanelLayout.createSequentialGroup()
-                        .addGap(397, 397, 397)
-                        .addComponent(jLabel2))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, settingPanelLayout.createSequentialGroup()
-                        .addGap(162, 162, 162)
-                        .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(JbwordEasy, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-                            .addComponent(JbgameEasy, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
-                                .addComponent(JbwordMedium, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(13, 13, 13))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
-                                .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(JbgameMedium, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE))
-                                .addGap(15, 15, 15)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
+                .addGap(162, 162, 162)
+                .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(JbwordEasy, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(JbgameEasy, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(156, 156, 156)
+                .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(JbwordMedium, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
+                        .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(JbgameMedium, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(2, 2, 2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 164, Short.MAX_VALUE)
                 .addComponent(JbwordHard, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(143, 143, 143))
             .addGroup(settingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(394, 394, 394))
             .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
                     .addContainerGap(687, Short.MAX_VALUE)
                     .addComponent(JbgameHard1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(148, 148, 148)))
+            .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, settingPanelLayout.createSequentialGroup()
+                    .addContainerGap(407, Short.MAX_VALUE)
+                    .addComponent(jLabel4)
+                    .addGap(389, 389, 389)))
         );
         settingPanelLayout.setVerticalGroup(
             settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(settingPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addGap(46, 46, 46)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
                 .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JbwordEasy, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JbwordMedium, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JbwordHard, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(23, 23, 23)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
+                .addGap(63, 63, 63)
                 .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(JbgameEasy, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(JbgameMedium, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -282,6 +295,11 @@ public class mainFrame extends javax.swing.JFrame {
                     .addContainerGap(196, Short.MAX_VALUE)
                     .addComponent(JbgameHard1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(136, 136, 136)))
+            .addGroup(settingPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(settingPanelLayout.createSequentialGroup()
+                    .addGap(172, 172, 172)
+                    .addComponent(jLabel4)
+                    .addContainerGap(206, Short.MAX_VALUE)))
         );
 
         jPanel1.add(settingPanel, "card5");
@@ -311,10 +329,19 @@ public class mainFrame extends javax.swing.JFrame {
         timerLabel.setForeground(new java.awt.Color(255, 255, 255));
         timerLabel.setText("Timer");
 
-        inputWordTF.setEditable(false);
         inputWordTF.setBackground(new java.awt.Color(0, 0, 0));
         inputWordTF.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         inputWordTF.setForeground(new java.awt.Color(255, 255, 255));
+        inputWordTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inputWordTFActionPerformed(evt);
+            }
+        });
+        inputWordTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inputWordTFKeyPressed(evt);
+            }
+        });
 
         currentWordTF.setEditable(false);
         currentWordTF.setBackground(new java.awt.Color(0, 0, 0));
@@ -449,12 +476,66 @@ public class mainFrame extends javax.swing.JFrame {
      }
      
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void inputWordTFKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inputWordTFKeyPressed
+  
+   
+    }//GEN-LAST:event_inputWordTFKeyPressed
+
+    private void inputWordTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputWordTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_inputWordTFActionPerformed
 private void StartGame()
 {
     currentWordTF.setText(words.get(randInt(0, words.size()-1)));
     scoreLabel.setText("Your Score: "+playerScore);
+    switch(gameDifficulty)
+    {case "easy":
+    {
+        totalTime= 60;
+        bonustime=10;
+        break;
+    }
+    case "medium":
+    {totalTime= 30;
+        bonustime=5;
+        
+        break;
+    }
+    case "hard":
+    {totalTime= 5;
+        bonustime=1;
+        
+        break;
+    }
+        
+    }
+   inputWordTF.requestFocusInWindow();
+     timer.scheduleAtFixedRate(new TimerTask() {
+            
+            public void run() {
+                timerLabel.setText("Timer : "+totalTime+" seconds left");
+                totalTime--;
+                
+                if(inputWordTF.getText().equals(currentWordTF.getText())){
+                   totalTime=totalTime+bonustime;
+                   currentWordTF.setText(words.get(randInt(0, words.size()-1)));
+                   playerScore=playerScore+200;
+                   scoreLabel.setText("Your Score: "+playerScore);
+                   inputWordTF.setText("");
+                }
+                
+                if (totalTime<= 0){
+                    timer.cancel();
+            }}
+        }, 0, interval);
+     
+   
     
 }
+
+
+
   private void resetAllWords()
   {
       try {
@@ -579,6 +660,7 @@ private void StartGame()
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton scoreButton;
     private javax.swing.JLabel scoreLabel;
